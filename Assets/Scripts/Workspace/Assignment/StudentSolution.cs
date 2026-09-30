@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Assignment
 {
@@ -14,7 +15,18 @@ namespace Assignment
 
             // Your code here ...
             // ...
-
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == target)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1)
+            {
+                Debug.Log("Target not found in the array.");
+            }
 
             return index;
         }
@@ -33,7 +45,26 @@ namespace Assignment
 
             // Your code here ...
             // ...
-
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    if (array[i, j] == target)
+                    {
+                        row = i;
+                        col = j;
+                        break;
+                    }
+                }
+                if (row != -1 && col != -1)
+                {
+                    break;
+                }
+            }
+            if (row == -1 || col == -1)
+            {
+                Debug.Log("Target not found in the array.");
+            }
             return new[] { row, col };
         }
 
@@ -45,6 +76,31 @@ namespace Assignment
 
             // Your code here ...
             // ...
+            int left = 0;
+            int right = array.Length - 1;
+
+            while (left <= right)
+            {
+                int mid = left + (right - left) / 2;
+                if (array[mid] == target)
+                {
+                    index = mid;
+                    break;
+                }
+                else if (array[mid] < target)
+                {
+                    left = mid + 1;
+                }
+                else
+                {
+                    right = mid - 1;
+                }
+            }
+
+            if (index == -1)
+            {
+                Debug.Log("Target not found in the array.");
+            }
 
             return index;
         }
@@ -55,17 +111,76 @@ namespace Assignment
 
         public int[] AS01_FindFirstAndLastElementOfArray(int[] array, int target)
         {
-            throw new NotImplementedException();
+            int first = -1;
+            int last = -1;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == target)
+                {
+                    if (first == -1)
+                    {
+                        first = i;
+                    }
+
+                    last = i;
+                }
+            }
+
+            if (first == -1)
+            {
+                return new int[] { -1 };
+            }
+
+            return new int[] { first, last };
         }
 
         public int AS02_FindMaxLessThan(int[] array, int target)
         {
-            throw new NotImplementedException();
+            int maxVal = int.MinValue;
+            bool found = false;
+
+            // วนลูปหาค่าที่น้อยกว่า target แต่มีค่ามากที่สุดในกลุ่มนั้น
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] < target && (!found || array[i] > maxVal))
+                {
+                    maxVal = array[i];
+                    found = true;
+                }
+            }
+
+            // หากไม่มีค่าใดน้อยกว่า target ให้คืนค่า -1
+            return found ? maxVal : -1;
         }
 
         public int[] AS03_FindRange(int[] array, int min, int max)
         {
-            throw new NotImplementedException();
+            // นับจำนวนสมาชิกที่อยู่ในช่วง [min, max] ก่อนเพื่อกำหนดขนาดของ Array ผลลัพธ์
+            int count = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] >= min && array[i] <= max)
+                {
+                    count++;
+                }
+            }
+
+            // สร้าง Array ผลลัพธ์ตามขนาดที่นับได้
+            int[] result = new int[count];
+            int index = 0;
+
+            // นำค่าที่อยู่ในช่วงใส่ลงใน Array ผลลัพธ์
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] >= min && array[i] <= max)
+                {
+                    result[index] = array[i];
+                    index++;
+                }
+            }
+
+            return result;
         }
 
         #endregion
@@ -74,9 +189,25 @@ namespace Assignment
 
         public int[] EX01_FindTargetEnemies(int[] enemyHPs, int mana)
         {
-            throw new NotImplementedException();
-        }
+            // Select enemies in array order while sufficient mana remains.
+            int[] selected = new int[enemyHPs.Length];
+            int count = 0;
+            int remainingMana = mana;
 
+            for (int i = 0; i < enemyHPs.Length; i++)
+            {
+                if (enemyHPs[i] <= remainingMana)
+                {
+                    selected[count] = enemyHPs[i];
+                    count++;
+                    remainingMana -= enemyHPs[i];
+                }
+            }
+
+            int[] result = new int[count];
+            Array.Copy(selected, result, count);
+            return result;
+        }
         #endregion
     }
 }
